@@ -1,0 +1,32 @@
+.category-menu {
+  display: block;
+  padding: 10px;
+  padding-left: 20px;
+  text-align: left;
+  margin-right: 20px;
+}
+  
+.menu-list {
+  margin: 5px 0px;
+  padding: 0;
+  padding-top: 10px;
+  list-style-type: none;
+
+  li{
+    font-weight: 900;
+    padding: 5px;
+    text-transform: capitalize;
+
+    &:hover {
+      background: #0a0a0a;
+    }
+    &:hover a{
+      color: white;
+    }
+  }
+}
+
+.menu-list li a{
+    color: #1a1a1a;
+    text-decoration: none;
+}

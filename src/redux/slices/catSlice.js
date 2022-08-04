@@ -3,12 +3,11 @@ const initialState = {
   images: [],
   categories: [],
   loading: true,
-  page: 0,
+  page: 1,
   limit: 10
 }
 
 export const fetchCats = createAsyncThunk('cats/fetchCats',
-
 async () => {
   return await fetch(`https://api.thecatapi.com/v1/images/search?limit=${initialState.limit}&page=${initialState.page}`,{
     headers: {
@@ -29,6 +28,18 @@ async () => {
   }).then(res => res.json());
 })
 
+export const fetchCatsByCategories = createAsyncThunk('cats/fetchCatsByCategories',
+async (id) => {
+  return await fetch(`https://api.thecatapi.com/v1/images/search?limit=${initialState.limit}&page=${initialState.page}&category_ids=${id}`,{
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": "1cf30f52-f7b3-4e95-86f7-f8998c988cc0"
+    }
+  }).then(res => {
+    return res.json()
+  });
+})
+
 export const catSlice = createSlice({
   name: 'cats',
   initialState,
@@ -36,12 +47,8 @@ export const catSlice = createSlice({
     loadeMore: (state) => {
       state.page = state.page + 1
     },
-    getCatsByCategories:  (state, {payload}) => {
-      state.images = state.images.filter(item => item.categories.some(i => i.id === payload))
-    },
   },
   extraReducers: builder => {
-    
     builder.addCase(fetchCats.pending, (state) => {
       state.loading = true
     })
@@ -55,10 +62,19 @@ export const catSlice = createSlice({
     builder.addCase(fetchCatsCategories.fulfilled, (state, { payload }) => {
       state.categories = payload
     })
-    
+    builder.addCase(fetchCatsByCategories.pending, (state) => {
+      state.loading = true
+    })
+    builder.addCase(fetchCatsByCategories.fulfilled, (state, { payload }) => {
+      state.loading = false
+      state.images = payload
+    })
+    builder.addCase(fetchCatsByCategories.rejected, (state) => {
+      state.loading = false
+    })
   }
 })
 
-export const {  loadeMore, getCatsByCategories } = catSlice.actions
+export const { loadeMore } = catSlice.actions
 
 export default catSlice.reducer
